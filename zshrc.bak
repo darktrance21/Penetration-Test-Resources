@@ -1,0 +1,209 @@
+# If you come from bash you might have to change your $PATH.
+export PATH=$HOME/bin:/usr/local/bin:/opt:/usr/local/bin:/usr/bin:/root/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
+
+# Path to your oh-my-zsh installation.
+export ZSH="/root/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+ZSH_THEME="random"
+
+# Set list of themes to pick from when loading at random
+# Setting this variable when ZSH_THEME="mh"
+# a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
+# If set to an empty array, this variable will have no effect.
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment the following line to automatically update without prompting.
+# DISABLE_UPDATE_PROMPT="true"
+
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS=true
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load?
+# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(git git-extras tmux dirhistory python pip)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git battery docker git-extras tmux dirhistory python pip)
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+alias zshconfig="nano ~/.zshrc"
+alias ohmyzsh="nano ~/.oh-my-zsh"
+alias zshsource="source /root/.zshrc"
+
+
+## NETWORKING
+alias wgupny='wg-quick up Documents/vpn/USA-NewYork1.conf'
+alias wgdownny='wg-quick down Documents/vpn/USA-NewYork1.conf'
+alias ngrok-********='ngrok http -subdomain ******** 80'
+alias server-http='sudo python -m SimpleHTTPServer 80'
+alias server-http3='sudo python3 -m http.server 80'
+alias server-ftp='sudo python -m pyftpdlib -p 21 -w'
+alias server-node='http-server -p 8000'
+alias server-node-static='static -p 8000'
+alias externalip='curl ipinfo.io'
+alias localipinfo="/usr/sbin/ifconfig -a | awk '/(cast)/ { print $2 }' | cut -d':' -f2 | head -1"
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias localip="/usr/sbin/ifconfig getifaddr en1"
+alias ips="/usr/sbin/ifconfig -a | perl -nle'/(\d+\.\d+\.\d+\.\d+)/ && print $1'"
+
+myip() {
+    echo $(/usr/sbin/ifconfig -a tun0 | perl -nle'/(\d+\.\d+\.\d+\.\d+)/ && print $1')
+}
+alias htb="openvpn /root/documents/vpn/vpn.ovpn"
+
+#show aliases
+alias al='echo "------------Your aliases------------";alias'
+alias a='bash ~/bash_aliases_help.sh --color=true | less -r'
+
+alias gah='sudo $(history -p \!\!)'
+
+## SCANNING
+nikto() {
+    /usr/bin/nikto -host "${1}" | tee nikto."${1}".out
+}
+
+function gobust() {
+    if [[ -z $2 ]]; then
+        wordlist=/usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt
+    else
+        wordlist=$2
+    fi
+    if [[ "${1}" == "-h" || "${1}" == "--help" ]]; then
+        echo gobuster -u $1 -w $wordlist -s '200,204,301,302,307,403,500' -e php,aspx,txt,html -t 50 | tee gobuster.$1.out
+    else
+        gobuster -u $1 -w $wordlist -s '200,204,301,302,307,403,500' -e php,aspx,txt,html -t 50 | tee gobuster.$1.out
+    fi
+}
+
+function dirsear() {
+    if [[ -z $2 ]]; then
+        wordlist=/usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt
+    else
+        wordlist=$2
+    fi
+    if [[ "${1}" == "-h" || "${1}" == "--help" ]]; then
+        echo dirsearch -u $1 -w $wordlist -e php,txt,html,aspx -t 150 | tee dirsearch$
+    else
+        dirsearch -u $1 -w $wordlist -e php,txt,html,aspx -t 150 | tee disearch.$1.o$
+    fi
+}
+
+ms() {
+
+   masscan -p1-65535,U:1-65535 "${1}" --rate=1000 -e tun0 > ports
+}
+
+ms-clean() {
+
+   ports=$(cat ports | awk -F " " '{print $4}' | awk -F "/" '{print $1}' | sort -n | tr '\n' ',' | sed 's/,$//')
+}
+
+ms-nmap() {
+
+   nmap -Pn -sV -sC -vv -p$ports "${1}" -oA nmap
+}
+
+adrive() {
+
+   sshpass -p "password" scp "${1}" email@scp.adrive.com:.
+}
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+        source /etc/profile.d/vte.sh
+fi
+setopt interactivecomments
+setopt ignoreeof
+setopt correctall
+setopt globdots
+#if ([[ -z "$TMUX" && -n "$SSH_CONNECTION" ]]); then /usr/bin/tmux attach || /usr/bin/tmux new; fi
+MSF_DATABASE_CONFIG=/usr/share/metasploit-framework/config/database.yml
+
+alias chrome="chromium --no-sandbox"
+alias burpro="cd /usr/bin && java -jar decoder_new.jar"
+
+ai() {
+    apt install -y "${1}"
+}
+
+## DOCKER
+alias di="docker images"
+alias dca="docker container ps -a"
+alias dp="docker container prune"
+alias sniper="docker run -it menzo/sn1per-docker sniper $@"
+alias htb-labs="cd /media/root/NTFS/labs/htb"
+alias goo="google-drive-ocamlfuse ~/mygoogledrive"
+alias xclip="xclip -sel clip"
+alias getclip="xclip -sel clip -o"
+alias msf="service postgresql start && ss -ant && msfdb init && msfconsole"
+
+save-last-cmd() {
+      history | tail -n 1 | sed "s/[[:digit:]]*  //" | sed "s/^#//" | xclip
+}
